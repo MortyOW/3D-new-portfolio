@@ -1,12 +1,123 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Desk</title>
+        <style>
+        body {
+            margin: 0;
+        }
+        </style>
+    </head>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.131.2/build/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.131.2/examples/js/controls/OrbitControls.js"></script>
+        <script>
+        // Set up the camera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 1.5, 2.5);
+        camera.rotation.set(-Math.PI / 5, 0, 0);
+
+        // Set up the renderer
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Set up the scene
+        const scene = new THREE.Scene();
+
+        // Set up textures
+        const woodTexture = new THREE.TextureLoader().load('https://i.imgur.com/wyJDFOp.png');
+        const metalTexture = new THREE.TextureLoader().load('https://i.imgur.com/RHfyN4v.png');
+
+        // Set up desk top
+        const deskTopGeometry = new THREE.BoxGeometry(1.2, 0.1, 0.6);
+        const deskTopMaterial = new THREE.MeshPhongMaterial({ map: woodTexture, side: THREE.DoubleSide });
+        const deskTop = new THREE.Mesh(deskTopGeometry, deskTopMaterial);
+        deskTop.position.set(0, 0.05, 0);
+        scene.add(deskTop);
+
+        // Set up desk legs
+        const deskLegGeometry = new THREE.BoxGeometry(0.1, 0.5, 0.1);
+        const deskLegMaterial = new THREE.MeshPhongMaterial({ map: metalTexture, side: THREE.DoubleSide });
+        const deskLeg1 = new THREE.Mesh(deskLegGeometry, deskLegMaterial);
+        deskLeg1.position.set(-0.5, -0.25, 0.25);
+        deskTop.add(deskLeg1);
+        const deskLeg2 = new THREE.Mesh(deskLegGeometry, deskLegMaterial);
+        deskLeg2.position.set(-0.5, -0.25, -0.25);
+        deskTop.add(deskLeg2);
+        const deskLeg3 = new THREE.Mesh(deskLegGeometry, deskLegMaterial);
+        deskLeg3.position.set(0.5, -0.25, 0.25);
+        deskTop.add(deskLeg3);
+        const deskLeg4 = new THREE.Mesh(deskLegGeometry, deskLegMaterial);
+        deskLeg4.position.set(0.5, -0.25, -0.25);
+        deskTop.add(deskLeg4);
+
+        // Set up drawers
+        const drawerGeometry = new THREE.BoxGeometry(0.55, 0.2, 0.45);
+        const drawerMaterial = new THREE.MeshPhongMaterial({ map: woodTexture, side: THREE.DoubleSide });
+        const drawer1 = new THREE.Mesh(drawerGeometry , drawerMaterial);
+
+    drawer1.position.set(-0.2, -0.15, 0.2);
+    deskTop.add(drawer1);
+    const drawer2 = new THREE.Mesh(drawerGeometry, drawerMaterial);
+    drawer2.position.set(-0.2, -0.15, -0.2);
+    deskTop.add(drawer2);
+    const drawer3 = new THREE.Mesh(drawerGeometry, drawerMaterial);
+    drawer3.position.set(0.2, -0.15, 0.2);
+    deskTop.add(drawer3);
+    const drawer4 = new THREE.Mesh(drawerGeometry, drawerMaterial);
+    drawer4.position.set(0.2, -0.15, -0.2);
+    deskTop.add(drawer4);
+
+    // Set up handle for drawers
+    const handleGeometry = new THREE.BoxGeometry(0.1, 0.02, 0.02);
+    const handleMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
+    const handle1 = new THREE.Mesh(handleGeometry, handleMaterial);
+    handle1.position.set(-0.27, -0.12, 0.2);
+    drawer1.add(handle1);
+    const handle2 = new THREE.Mesh(handleGeometry, handleMaterial);
+    handle2.position.set(-0.27, -0.12, -0.2);
+    drawer2.add(handle2);
+    const handle3 = new THREE.Mesh(handleGeometry, handleMaterial);
+    handle3.position.set(0.27, -0.12, 0.2);
+    drawer3.add(handle3);
+    const handle4 = new THREE.Mesh(handleGeometry, handleMaterial);
+    handle4.position.set(0.27, -0.12, -0.2);
+    drawer4.add(handle4);
+
+    // Set up lamp
+    const lampGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.15, 32);
+    const lampMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    const lamp = new THREE.Mesh(lampGeometry, lampMaterial);
+    lamp.position.set(0.5, 0.1, 0.2);
+    deskTop.add(lamp);
+    const lampBaseGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.02, 32);
+    const lampBaseMaterial = new THREE.MeshPhongMaterial({ map: metalTexture, side: THREE.DoubleSide });
+    const lampBase = new THREE.Mesh(lampBaseGeometry, lampBaseMaterial);
+    lampBase.position.set(0, -0.25, 0);
+    lamp.add(lampBase);
+
+    // Set up directional light
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(0, 1, 1);
+    scene.add(light);
+
+    // Set up ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    scene.add(ambientLight);
+
+    // Set up orbit controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // Render the scene
+    function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+        controls.update();
+    }
+    animate();
+    </script>
+    </body>
+
